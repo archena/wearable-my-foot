@@ -1,12 +1,11 @@
 version: 2.1
 
 jobs:
-  build:
+  deploy_website:
     docker:
       - image: circleci/node
     environment:
       - GOOGLE_PROJECT_ID: "wearablemyfoot"
-    working_directory: "~/website"
     steps:
       - checkout
       - run:
@@ -14,12 +13,15 @@ jobs:
           command: npm install --prefix=./firebase-deploy firebase-tools
       - run:
           name: Deploy to Firebase
-          command: ./firebase-deploy/node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --project $GOOGLE_PROJECT_ID
+          command: |
+            pushd website
+            ./firebase-deploy/node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --project $GOOGLE_PROJECT_ID
+            popd
 
 workflows:
-  build_and_deploy:
+  deploy_website:
     jobs:
-      - build:
+      - deploy_website:
           filters:
             branches:
               only:
