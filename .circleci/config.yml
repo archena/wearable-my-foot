@@ -24,4 +24,3 @@ workflows:
             branches:
               only:
                 - master
-                - website
