@@ -6,6 +6,7 @@ jobs:
       - image: circleci/node
     environment:
       - GOOGLE_PROJECT_ID: "wearablemyfoot"
+    working_directory: "website"
     steps:
       - checkout
       - run:
