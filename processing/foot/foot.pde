@@ -9,6 +9,7 @@ import java.io.IOException;
 
 Serial arduino;
 float gX, gY, gZ;
+float gxSum, gySum, gzSum;
 long lastDataTime = millis();
 boolean connected = false;
 
@@ -40,29 +41,29 @@ void draw() {
   translate(width / 2, height / 2, 0);
 
   if (connected) {
-    background(0, 150, 0);
+    background(16, 29, 57);
     text("Connected to: " + portName, -300, -300);
   } else {
-    background(150, 0, 0);
+    background(100, 0, 0);
     text("Not connected to: " + portName + ", check portName/portNumber", -300, -300);
   }
 
-  drawBox("gyro\n","Raw gyroscope reading", -450, gX, gY, gZ);
+  drawGyroBox("Raw Gyroscope", -450, gX, gY, gZ);
 }
 
-void drawBox(String name, String description, int xShift, float gX, float gY, float gZ) {
+void drawGyroBox(String name, int xShift, float gX, float gY, float gZ) {
   pushMatrix();
   translate(xShift, 0, 0);
-  rotateX(radians(gX));
-  rotateZ(radians(-gY));
-  rotateY(radians(-gZ));
+  rotateX(radians(gySum));
+  rotateZ(radians(gxSum));
+  rotateY(radians(gzSum));
   textSize(16);
-  fill(0, 76, 183);
+  fill(80, 167, 170);
   box(160, 40, 300);
   fill(255, 255, 255);
   text(name, -60, 5, 151);
   popMatrix();
-  text(name + description + "\npitch: " + int(gY) + "\nroll: " + int(gX) + "\nyaw: " + int(gZ), xShift -20, 200);
+  text(name + "\npitch: " + int(gY) + "\nroll: " + int(gX) + "\nyaw: " + int(gZ), xShift -20, 200);
 }
 
 void serialEvent(Serial port) {
@@ -77,6 +78,9 @@ void serialEvent(Serial port) {
       gX = float(items[3]);
       gY = float(items[4]);
       gZ = float(items[5]);
+      gxSum += gX;
+      gySum += gY;
+      gzSum += gZ;
     }
   }
 }
